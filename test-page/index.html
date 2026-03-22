@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dark Pattern Test Store</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        header {
+            background: #e47911;
+            padding: 12px 24px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 0 16px;
+            display: grid;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 15px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 28px;
+            color: #B12704;
+            font-weight: bold;
+        }
+
+        /* Countdown */
+        .countdown {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 12px 0;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        .countdown span {
+            font-size: 22px;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .countdown-label {
+            font-size: 13px;
+            color: #856404;
+        }
+
+        /* Stock */
+        .stock-warning {
+            color: #c0392b;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .stock-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin: 6px 0;
+        }
+
+        .stock-bar-fill {
+            height: 6px;
+            background: #e74c3c;
+            border-radius: 3px;
+            width: 12%;
+        }
+
+        /* Social proof */
+        .social-proof {
+            background: #eaf4fb;
+            border-left: 3px solid #3498db;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #2471a3;
+            margin: 10px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Checkbox upsell */
+        .upsell {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .upsell input {
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .upsell-label {
+            font-size: 14px;
+        }
+
+        .upsell-label strong {
+            color: #27ae60;
+        }
+
+        /* Confirm shaming */
+        .cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn-primary {
+            background: #e47911;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-decline {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: #888;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 4px;
+        }
+
+        /* Infinite scroll */
+        .feed-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feed-img {
+            width: 80px;
+            height: 80px;
+            background: #ddd;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .feed-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .feed-tag {
+            display: inline-block;
+            background: #fff3e0;
+            color: #e65100;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-top: 4px;
+        }
+
+        /* Seasonal urgency */
+        .seasonal {
+            background: #fdecea;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #721c24;
+            margin: 10px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #c0392b;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>🛒 TotallyLegit Store</header>
+
+    <div class="container">
+
+        <!-- Pattern 1: Countdown Timer -->
+        <div class="card">
+            <h2>Pattern 1 — Countdown Timer</h2>
+            <h3>Wireless Noise-Cancelling Headphones</h3>
+            <p class="price">$89.99</p>
+            <div class="countdown">
+                <div>
+                    <div class="countdown-label">Deal ends in</div>
+                    <span id="timer">00:09:43</span>
+                </div>
+                <div style="font-size:13px; color:#856404; margin-left:8px;">
+                    ⚡ Limited time offer — price goes up at midnight!
+                </div>
+            </div>
+            <button class="btn-primary">Add to Cart</button>
+        </div>
+
+        <!-- Pattern 2: Low Stock -->
+        <div class="card">
+            <h2>Pattern 2 — Low Stock Scarcity</h2>
+            <h3>Premium Yoga Mat</h3>
+            <p class="price">$45.00</p>
+            <p class="stock-warning">⚠ Only 3 left in stock — order soon!</p>
+            <div class="stock-bar">
+                <div class="stock-bar-fill"></div>
+            </div>
+            <p style="font-size:12px; color:#888; margin-bottom:12px;">88% claimed</p>
+            <button class="btn-primary">Buy Now</button>
+        </div>
+
+        <!-- Pattern 3: Social Proof Pressure -->
+        <div class="card">
+            <h2>Pattern 3 — Social Proof Pressure</h2>
+            <h3>Standing Desk Converter</h3>
+            <p class="price">$129.99</p>
+            <div class="social-proof">👀 23 people are viewing this right now</div>
+            <div class="social-proof">🔥 47 people bought this in the last 24 hours</div>
+            <button class="btn-primary">Add to Cart</button>
+        </div>
+
+        <!-- Pattern 4: Pre-checked Upsell -->
+        <div class="card">
+            <h2>Pattern 4 — Pre-checked Upsell</h2>
+            <h3>Laptop Sleeve</h3>
+            <p class="price">$24.99</p>
+            <div class="upsell">
+                <input type="checkbox" id="insurance" checked />
+                <label class="upsell-label" for="insurance">
+                    <strong>✓ Add 2-year protection plan — $8.99</strong><br />
+                    <span style="font-size:12px; color:#666;">Covers accidental damage, spills, and theft</span>
+                </label>
+            </div>
+            <div class="upsell">
+                <input type="checkbox" id="donation" checked />
+                <label class="upsell-label" for="donation">
+                    <strong>✓ Donate $1 to plant a tree 🌱</strong><br />
+                    <span style="font-size:12px; color:#666;">We'll round up your order automatically</span>
+                </label>
+            </div>
+            <button class="btn-primary">Proceed to Checkout</button>
+        </div>
+
+        <!-- Pattern 5: Confirm Shaming -->
+        <div class="card">
+            <h2>Pattern 5 — Confirm Shaming</h2>
+            <h3>🎉 You've unlocked 20% off your order!</h3>
+            <p style="font-size:14px; color:#555; margin-bottom:12px;">
+                Join 2 million smart shoppers saving money every day.
+            </p>
+            <div class="cta-group">
+                <button class="btn-primary">Yes! Claim my 20% discount</button>
+                <button class="btn-decline" id="decline-btn">
+                    No thanks, I prefer paying full price
+                </button>
+            </div>
+        </div>
+
+        <!-- Pattern 6: Seasonal Urgency -->
+        <div class="card">
+            <h2>Pattern 6 — Seasonal Urgency</h2>
+            <h3>Heavy Winter Parka <span class="badge">TRENDING NOW</span></h3>
+            <p class="price">$189.00</p>
+            <div class="seasonal">
+                🌡️ Summer heatwave incoming — stock up on winter gear before prices rise!
+                Last chance to buy at pre-season prices.
+            </div>
+            <button class="btn-primary">Shop Winter Collection</button>
+        </div>
+
+        <!-- Pattern 7: Infinite Scroll Feed -->
+        <div class="card">
+            <h2>Pattern 7 — Infinite Scroll</h2>
+            <div id="feed">
+                <div class="feed-item">
+                    <div class="feed-img"></div>
+                    <div class="feed-text">
+                        <strong>Recommended for you</strong><br />
+                        Ultra-Comfort Memory Foam Pillow<br />
+                        <span class="feed-tag">Based on your browsing</span>
+                    </div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-img"></div>
+                    <div class="feed-text">
+                        <strong>Customers also bought</strong><br />
+                        Portable Bluetooth Speaker<br />
+                        <span class="feed-tag">Top seller</span>
+                    </div>
+                </div>
+            </div>
+            <div id="load-more" style="text-align:center; padding:16px; color:#3498db; font-size:14px; cursor:pointer;">
+                ↓ Load more recommendations
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Countdown timer
+        let seconds = 9 * 60 + 43
+        setInterval(() => {
+            seconds--
+            if (seconds < 0) seconds = 9 * 60 + 43
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0')
+            const s = String(seconds % 60).padStart(2, '0')
+            document.getElementById('timer').textContent = `00:${m}:${s}`
+        }, 1000)
+
+        // Infinite scroll simulation
+        let itemCount = 2
+        document.getElementById('load-more').addEventListener('click', () => {
+            const feed = document.getElementById('feed')
+            for (let i = 0; i < 3; i++) {
+                itemCount++
+                const item = document.createElement('div')
+                item.className = 'feed-item'
+                item.innerHTML = `
+        <div class="feed-img"></div>
+        <div class="feed-text">
+          <strong>More picks for you</strong><br/>
+          Recommended Product #${itemCount}<br/>
+          <span class="feed-tag">Sponsored</span>
+        </div>`
+                feed.appendChild(item)
+            }
+        })
+
+        // Confirm shaming hover effect
+        document.getElementById('decline-btn').addEventListener('mouseover', function () {
+            this.textContent = "No thanks, I enjoy wasting money"
+        })
+        document.getElementById('decline-btn').addEventListener('mouseout', function () {
+            this.textContent = "No thanks, I prefer paying full price"
+        })
+    </script>
+
+</body>
+
+</html>

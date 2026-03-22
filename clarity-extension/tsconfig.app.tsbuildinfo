@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/background/index.ts","./src/content/index.ts","./src/overlay/overlay.tsx","./src/overlay/main.tsx","./src/patterns/index.ts","./src/types/index.ts"],"version":"5.9.3"}
