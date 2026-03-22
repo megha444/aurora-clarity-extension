@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Clarity",
+  "description": "Makes digital manipulation visible in real time",
+  "version": "1.0",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://api.anthropic.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["overlay.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Clarity"
+  }
+}

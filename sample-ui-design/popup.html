@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 280px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #111827;
+      color: #F9FAFB;
+    }
+    .header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      background: #F59E0B;
+      border-radius: 50%;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .brand { font-size: 15px; font-weight: 600; color: #F59E0B; letter-spacing: 0.06em; }
+    .tagline { font-size: 11px; color: #6B7280; }
+    .section { padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7280; margin-bottom: 8px; }
+    .stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: #D1D5DB; }
+    .stat-val { font-size: 13px; font-weight: 600; color: #F59E0B; }
+    .pattern-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+    .pattern-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .pattern-name { font-size: 12px; color: #D1D5DB; flex: 1; }
+    .pattern-count { font-size: 11px; color: #6B7280; }
+    .footer { padding: 10px 18px; }
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; }
+    .toggle-label { font-size: 12px; color: #D1D5DB; }
+    .toggle { position: relative; width: 32px; height: 18px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: #374151; border-radius: 9px; transition: .2s; cursor: pointer; }
+    .slider:before { content:""; position:absolute; width:14px; height:14px; left:2px; top:2px; background:#fff; border-radius:50%; transition:.2s; }
+    input:checked + .slider { background: #F59E0B; }
+    input:checked + .slider:before { transform: translateX(14px); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <div class="dot"></div>
+      <span class="brand">CLARITY</span>
+    </div>
+    <div class="tagline">Making manipulation visible</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">This Session</div>
+    <div class="stat"><span class="stat-label">Patterns detected</span><span class="stat-val" id="total">0</span></div>
+    <div class="stat"><span class="stat-label">Time on page</span><span class="stat-val" id="time">0m</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Detected Types</div>
+    <div class="pattern-row">
+      <div class="pattern-dot" style="background:#F59E0B"></div>
+      <span class="pattern-name">Urgency / Countdown</span>
+      <span class="pattern-count" id="cnt-urgency">0</span>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-dot" style="background:#EF4444"></div>
+      <span class="pattern-name">False Scarcity</span>
+      <span class="pattern-count" id="cnt-scarcity">0</span>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-dot" style="background:#8B5CF6"></div>
+      <span class="pattern-name">Social Pressure</span>
+      <span class="pattern-count" id="cnt-social">0</span>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-dot" style="background:#10B981"></div>
+      <span class="pattern-name">Infinite Scroll</span>
+      <span class="pattern-count" id="cnt-scroll">0</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="toggle-row">
+      <span class="toggle-label">Clarity active</span>
+      <label class="toggle">
+        <input type="checkbox" id="active-toggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <script>
+    // Update session stats from storage
+    chrome.storage.session.get(['detectedPatterns', 'sessionStart'], (data) => {
+      const patterns = data.detectedPatterns || {};
+      const start = data.sessionStart || Date.now();
+      const mins = Math.round((Date.now() - start) / 60000);
+
+      const total = Object.values(patterns).reduce((a, b) => a + b, 0);
+      document.getElementById('total').textContent = total;
+      document.getElementById('time').textContent = mins + 'm';
+
+      document.getElementById('cnt-urgency').textContent = (patterns.countdown || 0) + (patterns.fomo_banner || 0);
+      document.getElementById('cnt-scarcity').textContent = patterns.scarcity || 0;
+      document.getElementById('cnt-social').textContent = patterns.social_proof || 0;
+      document.getElementById('cnt-scroll').textContent = patterns.infinite_scroll || 0;
+    });
+  </script>
+</body>
+</html>

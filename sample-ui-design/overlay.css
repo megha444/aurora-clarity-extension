@@ -1,0 +1,142 @@
+/* ============================================================
+   Clarity — overlay.css
+   Styles for the Clarity card overlay injected into pages
+   ============================================================ */
+
+#clarity-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 340px;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  pointer-events: none;
+}
+
+.clarity-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.14), 0 1px 4px rgba(0, 0, 0, 0.08);
+  pointer-events: all;
+  animation: claritySlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: bottom right;
+}
+
+.clarity-card--exit {
+  animation: claritySlideOut 0.25s ease-in both;
+}
+
+@keyframes claritySlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes claritySlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+.clarity-header {
+  background: #111827;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clarity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: clarityPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes clarityPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.clarity-brand {
+  font-size: 11px;
+  font-weight: 600;
+  color: #F59E0B;
+  letter-spacing: 0.08em;
+}
+
+.clarity-tag {
+  font-size: 10px;
+  color: #6B7280;
+  margin-left: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.clarity-close {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  margin-left: 4px;
+}
+
+.clarity-close:hover {
+  opacity: 1;
+}
+
+/* ─── Body ───────────────────────────────────────────────── */
+.clarity-body {
+  padding: 12px 14px;
+}
+
+.clarity-comment {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.clarity-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.clarity-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.clarity-time {
+  font-size: 10px;
+  color: #9CA3AF;
+  margin-left: auto;
+}

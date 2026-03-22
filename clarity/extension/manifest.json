@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Clarity — Manipulation Detector",
+  "version": "1.0.0",
+  "description": "Flags persuasive design patterns in plain English.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Clarity",
+    "default_icon": { "32": "icon.png" }
+  }
+}
