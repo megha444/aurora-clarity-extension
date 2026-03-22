@@ -1,0 +1,184 @@
+# Clarity — Cursor Rules
+> Python 3.12+ · FastAPI · Vanilla JS Chrome Extension
+
+---
+
+## PYTHON
+
+- Target **Python 3.12+** exclusively. Use modern features at all times.
+- Type hints on every function signature — parameters and return types. No exceptions.
+- Use `type` keyword for type aliases: `type PatternMap = dict[str, PatternConfig]`
+- Use new union syntax: `str | None` not `Optional[str]`
+- Use new generic syntax: `list[str]`, `dict[str, int]` not `List[str]`, `Dict[str, int]`
+- Use `match` / `case` (structural pattern matching) wherever it replaces if/elif chains on known shapes
+- Use `@dataclass(slots=True)` for simple data containers that don't need Pydantic
+- f-strings only — no `.format()`, no `%` formatting
+- Use walrus operator `:=` where it eliminates a redundant assignment
+- Prefer `pathlib.Path` over `os.path` for all file operations
+- Use `tomllib` (stdlib) for config files, not custom parsers
+- Async functions must be `async def` — never block the event loop with sync I/O
+
+---
+
+## FASTAPI
+
+- Use `Annotated` for dependency injection and field metadata: `Annotated[str, Query(min_length=1)]`
+- All request/response bodies are Pydantic v2 `BaseModel` with `model_config = ConfigDict(...)`
+- Use `model_config = ConfigDict(str_strip_whitespace=True, frozen=True)` on request models
+- Use `Field(...)` with `description=` on all Pydantic fields
+- Router files own one concern only — no business logic inside route handlers
+- Services are plain async functions or classes — not FastAPI dependencies unless shared state is needed
+- Always return typed responses: `-> AnalyzeResponse`, never `-> dict`
+- Use `HTTPException` with explicit `status_code` and `detail` — no bare `raise Exception`
+- Lifespan context (`@asynccontextmanager` on `lifespan=`) for startup/shutdown, not deprecated `@app.on_event`
+
+---
+
+## CODE QUALITY TOOLS
+
+### Linting & Formatting
+- **Ruff** — linter and formatter. Single tool replaces flake8, isort, pyupgrade, and black.
+- Config lives in `pyproject.toml`, not separate files.
+- Run: `ruff check . --fix && ruff format .`
+
+### Type Checking
+- **mypy** in strict mode: `--strict --python-version 3.12`
+- No `# type: ignore` without an inline comment explaining why.
+- Run: `mypy app/`
+
+### Pre-commit
+- All checks run on every commit via **pre-commit**.
+- Hooks: `ruff`, `ruff-format`, `mypy`, `trailing-whitespace`, `end-of-file-fixer`
+
+### Testing
+- **pytest** with **pytest-asyncio** for async route and service tests.
+- Aim for 100% coverage on `detector.py` — it is pure logic.
+- Use `httpx.AsyncClient` with `ASGITransport` for FastAPI integration tests (no real server).
+
+---
+
+## `pyproject.toml` (canonical config)
+
+```toml
+[project]
+name = "clarity-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "F",    # pyflakes
+  "I",    # isort
+  "UP",   # pyupgrade
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "SIM",  # flake8-simplify
+  "TCH",  # flake8-type-checking
+  "ANN",  # flake8-annotations
+  "ASYNC",# flake8-async
+  "RUF",  # ruff-specific
+]
+ignore = ["ANN101", "ANN102"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+pretty = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["tests/*"]
+```
+
+---
+
+## `.pre-commit-config.yaml`
+
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        args: [--strict, --python-version, "3.12"]
+        additional_dependencies: [pydantic, fastapi, anthropic]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-toml
+```
+
+Install: `pip install pre-commit && pre-commit install`
+
+---
+
+## JAVASCRIPT (Extension)
+
+- Vanilla JS only — no build step, no bundler.
+- Use `const` by default, `let` only when reassignment is necessary. Never `var`.
+- Use `async/await` — no raw `.then()` chains.
+- Wrap all `fetch` calls and `chrome.*` API calls in `try/catch`.
+- No inline styles except the overlay positioning offset (dynamic value). All other styles go in injected `<style>` tags.
+- Use `?.` optional chaining and `??` nullish coalescing instead of manual null checks.
+- DOM manipulation: prefer `element.innerHTML` for template rendering, `createElement` for single nodes.
+- No external libraries — keep extension self-contained.
+
+---
+
+## PROJECT STRUCTURE RULES
+
+- One file = one responsibility. No god files.
+- `routers/` — HTTP interface only. Call services, return responses.
+- `services/` — Business logic. No FastAPI imports.
+- `models/` — Pydantic schemas and type aliases. No logic.
+- Tests mirror source structure: `tests/services/test_detector.py` mirrors `app/services/detector.py`.
+
+---
+
+## NAMING CONVENTIONS
+
+| Thing | Convention | Example |
+|---|---|---|
+| Python files | `snake_case` | `ai_service.py` |
+| Classes | `PascalCase` | `DarkPatternDetector` |
+| Functions / methods | `snake_case` | `compute_score()` |
+| Constants | `UPPER_SNAKE` | `SCORE_MAP` |
+| Type aliases | `PascalCase` | `type FindingList = list[Finding]` |
+| JS functions | `camelCase` | `renderOverlay()` |
+| CSS classes | `kebab-case` with `clarity-` prefix | `.clarity-overlay` |
+
+---
+
+## WHAT CURSOR MUST NEVER DO
+
+- Never use `Any` in type hints without a `# noqa: ANN401` and a comment.
+- Never suppress mypy errors with `type: ignore` without explaining why in the same line.
+- Never put business logic inside a FastAPI route handler.
+- Never use `time.sleep()` in async code — use `await asyncio.sleep()`.
+- Never call `client.messages.create(...)` synchronously inside an `async def` — use the async client.
+- Never send `document.body.innerHTML` to the backend — visible text only.
+- Never let an AI failure propagate as an HTTP 500 — catch and fall back to rule-based messages.

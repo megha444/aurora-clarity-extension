@@ -1,0 +1,27 @@
+# Environment variables — never commit secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Node (just in case)
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp

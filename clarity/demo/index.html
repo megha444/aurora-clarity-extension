@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopFast — Demo Store</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #F9FAFB;
+      color: #111827;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Banner ── */
+    .banner {
+      background: #111827;
+      color: #F9FAFB;
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+    .banner strong { color: #F59E0B; }
+
+    /* ── Nav ── */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #E5E7EB;
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand { font-size: 20px; font-weight: 800; color: #111827; letter-spacing: -0.5px; }
+    .nav-brand span { color: #EF4444; }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* ── Product image placeholder ── */
+    .product-image {
+      background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+      border-radius: 16px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9CA3AF;
+      font-size: 80px;
+    }
+
+    /* ── Product info ── */
+    .product-info { display: flex; flex-direction: column; gap: 16px; }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6B7280;
+    }
+    .stars { color: #F59E0B; }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .price-current { font-size: 32px; font-weight: 800; color: #111827; }
+    .price-original { font-size: 18px; color: #9CA3AF; text-decoration: line-through; }
+    .price-save {
+      font-size: 12px;
+      font-weight: 600;
+      background: #DCFCE7;
+      color: #166534;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    /* ── Manipulation signals (all the dark patterns) ── */
+    .alert-box {
+      background: #FFF7ED;
+      border: 1px solid #FED7AA;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .alert-box .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-box strong { display: block; color: #9A3412; font-size: 12px; margin-bottom: 2px; }
+    .alert-box span { color: #7C2D12; }
+
+    .social-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .social-chip {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      color: #1D4ED8;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .timer-box {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .timer-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #EF4444;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .timer-digits {
+      font-size: 36px;
+      font-weight: 800;
+      color: #991B1B;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+    }
+    .timer-sub { font-size: 11px; color: #EF4444; margin-top: 4px; }
+
+    .shipping-note {
+      font-size: 11px;
+      color: #9CA3AF;
+    }
+
+    /* ── CTA ── */
+    .cta-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .btn-primary {
+      background: #111827;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover { background: #1F2937; }
+
+    .dismiss-link {
+      text-align: center;
+      font-size: 11px;
+      color: #9CA3AF;
+      cursor: pointer;
+    }
+    .dismiss-link:hover { text-decoration: underline; }
+
+    /* ── Reviews section ── */
+    .reviews { margin-top: 64px; }
+    .reviews h2 { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+    .review-card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .reviewer { font-weight: 600; font-size: 13px; }
+    .review-text { font-size: 13px; color: #4B5563; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <!-- URGENCY: flash sale banner -->
+  <div class="banner">
+    ⚡ <strong>Flash Sale</strong> — Today only! Extra 15% off sitewide. Limited time offer.
+  </div>
+
+  <nav>
+    <span class="nav-brand">Shop<span>Fast</span></span>
+    <span style="font-size:13px;color:#6B7280;">Free shipping on orders over $50</span>
+  </nav>
+
+  <div class="container">
+    <div class="product-grid">
+
+      <div class="product-image">🎧</div>
+
+      <div class="product-info">
+
+        <h1>Premium Wireless Headphones<br/><span style="font-size:16px;color:#6B7280;font-weight:400">NoiseClear Pro X1</span></h1>
+
+        <div class="rating">
+          <span class="stars">★★★★★</span>
+          <span>4.8 (2,341 reviews)</span>
+          <span style="color:#10B981;font-weight:600;">Bestselling</span>
+        </div>
+
+        <div class="price-row">
+          <span class="price-current">$89.99</span>
+          <span class="price-original">$149.99</span>
+          <span class="price-save">Save $60</span>
+        </div>
+
+        <!-- HIDDEN COSTS signal -->
+        <p class="shipping-note">* Shipping calculated at checkout. Taxes not included. Service fee may apply.</p>
+
+        <!-- SCARCITY signal -->
+        <div class="alert-box">
+          <span class="icon">⚠️</span>
+          <div>
+            <strong>Low Stock Warning</strong>
+            <span>Only 2 left in stock — order soon before it sells out!</span>
+          </div>
+        </div>
+
+        <!-- SOCIAL PROOF signals -->
+        <div class="social-row">
+          <span class="social-chip">👀 37 people are viewing this right now</span>
+          <span class="social-chip">🛒 142 sold in the last 24 hours</span>
+          <span class="social-chip">🔥 Popular choice this week</span>
+        </div>
+
+        <!-- URGENCY: countdown timer -->
+        <div class="timer-box">
+          <div class="timer-label">⏱ Sale ends in</div>
+          <div class="timer-digits" id="timer">02:47:33</div>
+          <div class="timer-sub">Limited time offer — today only!</div>
+        </div>
+
+        <!-- CTA + CONFIRMSHAMING -->
+        <div class="cta-group">
+          <button class="btn-primary">Add to Cart — $89.99</button>
+          <span class="dismiss-link">No thanks, I don't want to save $60</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="reviews">
+      <h2>Customer Reviews</h2>
+      <div class="review-card">
+        <div class="review-header">
+          <span class="reviewer">Sarah M.</span>
+          <span class="stars" style="font-size:13px">★★★★★</span>
+        </div>
+        <p class="review-text">These headphones are incredible. The noise cancellation is best in class and battery life is amazing. Grabbed them during the flash sale — glad I didn't miss out!</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <span class="reviewer">James T.</span>
+          <span class="stars" style="font-size:13px">★★★★☆</span>
+        </div>
+        <p class="review-text">Solid sound quality and comfortable fit. Shipping took a while but the product itself is great. Would buy again.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let t = 10053;
+    setInterval(() => {
+      t = Math.max(0, t - 1);
+      const h = String(Math.floor(t / 3600)).padStart(2, "0");
+      const m = String(Math.floor((t % 3600) / 60)).padStart(2, "0");
+      const s = String(t % 60).padStart(2, "0");
+      document.getElementById("timer").textContent = `${h}:${m}:${s}`;
+    }, 1000);
+  </script>
+</body>
+</html>

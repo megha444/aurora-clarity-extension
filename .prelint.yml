@@ -1,0 +1,8 @@
+specs:
+  - specs/product.md
+  - specs/architecture.md
+  - README.md
+
+review:
+  on: pull_request
+  fail_on: conflict

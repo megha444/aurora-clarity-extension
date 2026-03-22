@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarity — Pitch Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0A0A0F;
+    color: #F9FAFB;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .deck { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .slide.active { display: flex; }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    background: rgba(255,255,255,0.06);
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+  }
+  .nav button {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color .15s, background .15s;
+  }
+  .nav button:hover { color: #F9FAFB; background: rgba(255,255,255,0.08); }
+  .slide-counter { font-size: 12px; color: #6B7280; min-width: 48px; text-align: center; }
+  .dots { display: flex; gap: 5px; }
+  .dot-indicator {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #374151;
+    transition: background .2s, transform .2s;
+    cursor: pointer;
+  }
+  .dot-indicator.active { background: #F59E0B; transform: scale(1.4); }
+
+  /* ─── Shared styles ─── */
+  .amber { color: #F59E0B; }
+  .muted { color: #6B7280; }
+  .label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #F59E0B; margin-bottom: 16px;
+  }
+  h1 { font-size: 72px; font-weight: 800; line-height: 1.05; }
+  h2 { font-size: 48px; font-weight: 700; line-height: 1.1; }
+  h3 { font-size: 28px; font-weight: 600; }
+
+  .tag {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    padding: 4px 12px; border-radius: 20px;
+    background: rgba(245,158,11,0.15); color: #F59E0B;
+    border: 1px solid rgba(245,158,11,0.3);
+    margin-top: 16px;
+  }
+
+  /* ─── Slide 1: Title ─── */
+  #s1 { background: #0A0A0F; }
+  .s1-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .s1-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .s1-dot { width: 14px; height: 14px; background: #F59E0B; border-radius: 50%; }
+  .s1-brand { font-size: 16px; font-weight: 600; letter-spacing: 0.1em; color: #F59E0B; }
+  .s1-title { font-size: 80px; font-weight: 900; line-height: 0.95; margin-bottom: 20px; }
+  .s1-sub { font-size: 18px; color: #9CA3AF; line-height: 1.6; max-width: 400px; }
+  .mock-card {
+    background: white; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    transform: rotate(2deg);
+  }
+  .mock-card-header {
+    background: #111827; padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mock-dot { width: 8px; height: 8px; background: #F59E0B; border-radius: 50%; }
+  .mock-brand-text { font-size: 11px; font-weight: 600; color: #F59E0B; letter-spacing: 0.08em; }
+  .mock-tag-text { font-size: 10px; color: #6B7280; margin-left: auto; }
+  .mock-card-body { padding: 14px 16px; }
+  .mock-text { font-size: 13px; font-weight: 500; color: #111827; line-height: 1.55; margin-bottom: 10px; }
+  .mock-badge {
+    display: inline-block; font-size: 11px; font-weight: 500;
+    padding: 2px 10px; border-radius: 20px;
+    background: #FEF3C7; color: #92400E;
+  }
+
+  /* ─── Slide 2: Problem ─── */
+  #s2 { background: #0A0A0F; }
+  .stat-row { display: flex; gap: 32px; margin-top: 40px; }
+  .stat-card {
+    flex: 1; background: #111827; border: 1px solid #1F2937;
+    border-radius: 12px; padding: 24px 20px;
+  }
+  .stat-num { font-size: 52px; font-weight: 800; color: #F59E0B; line-height: 1; }
+  .stat-label-text { font-size: 13px; color: #6B7280; margin-top: 8px; line-height: 1.4; }
+
+  /* ─── Slide 3: Solution ─── */
+  #s3 { background: #0A0A0F; }
+  .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+  .sol-card {
+    background: #111827; border-radius: 12px; padding: 24px;
+    border: 1px solid #1F2937;
+  }
+  .sol-num { font-size: 36px; font-weight: 800; color: rgba(245,158,11,0.25); margin-bottom: 12px; }
+  .sol-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .sol-desc { font-size: 13px; color: #9CA3AF; line-height: 1.6; }
+
+  /* ─── Slide 4: How It Works ─── */
+  #s4 { background: #0A0A0F; }
+  .how-steps { display: flex; gap: 0; margin-top: 48px; align-items: flex-start; }
+  .how-step { flex: 1; text-align: center; padding: 0 20px; }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4);
+    color: #F59E0B; font-weight: 700; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .step-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .step-desc { font-size: 13px; color: #9CA3AF; line-height: 1.6; }
+  .step-arrow { padding-top: 22px; color: #374151; font-size: 24px; flex-shrink: 0; }
+
+  /* ─── Slide 5: Demo ─── */
+  #s5 { background: #0A0A0F; }
+  .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+  .demo-card { background: white; border-radius: 12px; overflow: hidden; }
+  .demo-header { background: #111827; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+  .demo-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .demo-brand { font-size: 10px; font-weight: 600; color: #F59E0B; letter-spacing: 0.08em; }
+  .demo-type { font-size: 9px; color: #6B7280; margin-left: auto; }
+  .demo-body { padding: 12px 14px; }
+  .demo-comment { font-size: 12px; font-weight: 500; color: #111827; line-height: 1.5; margin-bottom: 8px; }
+  .demo-badge-wrap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .demo-badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; }
+  .demo-site { font-size: 10px; font-weight: 500; color: #6B7280; padding: 12px 14px 10px; border-top: 1px solid #F3F4F6; }
+
+  /* ─── Slide 6: Tech ─── */
+  #s6 { background: #0A0A0F; }
+  .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+  .tech-block { }
+  .tech-title { font-size: 14px; font-weight: 600; color: #F59E0B; margin-bottom: 16px; }
+  .tech-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+  .tech-icon { width: 28px; height: 28px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; color: #F59E0B; margin-top: 1px; }
+  .tech-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .tech-desc { font-size: 12px; color: #6B7280; line-height: 1.5; }
+
+  /* ─── Slide 7: Vision ─── */
+  #s7 { background: #0A0A0F; }
+  .vision-quote {
+    font-size: 36px; font-weight: 700; line-height: 1.3;
+    max-width: 800px;
+    margin-bottom: 40px;
+  }
+  .vision-quote span { color: #F59E0B; }
+  .vision-row { display: flex; gap: 24px; }
+  .vision-item {
+    flex: 1; background: #111827; border-radius: 10px; padding: 18px 20px;
+    border: 1px solid #1F2937;
+  }
+  .vision-head { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .vision-text { font-size: 12px; color: #9CA3AF; line-height: 1.5; }
+
+  /* ─── Slide 8: Team / CTA ─── */
+  #s8 { background: #0A0A0F; text-align: center; }
+  .cta-title { font-size: 72px; font-weight: 900; line-height: 1; margin-bottom: 20px; }
+  .cta-title span { color: #F59E0B; }
+  .cta-sub { font-size: 20px; color: #9CA3AF; line-height: 1.6; max-width: 580px; margin: 0 auto 40px; }
+  .cta-demo {
+    display: inline-block; background: #F59E0B; color: #0A0A0F;
+    font-size: 15px; font-weight: 700; padding: 14px 32px;
+    border-radius: 40px; letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- ─── Slide 1: Title ─── -->
+  <div class="slide active" id="s1">
+    <div class="s1-grid">
+      <div>
+        <div class="s1-logo">
+          <div class="s1-dot"></div>
+          <span class="s1-brand">CLARITY</span>
+        </div>
+        <div class="s1-title">See<br>Through<br>the Screen.</div>
+        <div class="s1-sub">AI that makes digital manipulation visible — and a little uncomfortable — in real time.</div>
+        <div class="tag">Chrome Extension · Claude API</div>
+      </div>
+      <div>
+        <div class="mock-card">
+          <div class="mock-card-header">
+            <div class="mock-dot"></div>
+            <span class="mock-brand-text">CLARITY</span>
+            <span class="mock-tag-text">scarcity</span>
+          </div>
+          <div class="mock-card-body">
+            <div class="mock-text">"Only 3 left in stock!" — Amazon often shows this on items with thousands of units warehoused. The scarcity is manufactured.</div>
+            <span class="mock-badge">false scarcity</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 2: Problem ─── -->
+  <div class="slide" id="s2">
+    <div class="label">The Problem</div>
+    <h2>Modern apps don't just<br>capture attention.<br><span class="amber">They weaponize it.</span></h2>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">$4.5T</div>
+        <div class="stat-label-text">in online retail runs on urgency, scarcity, and social pressure tactics</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">87%</div>
+        <div class="stat-label-text">of users don't recognize dark patterns while they're happening</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0</div>
+        <div class="stat-label-text">tools that flag manipulation in real time, in plain language, with personality</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 3: Solution ─── -->
+  <div class="slide" id="s3">
+    <div class="label">The Solution</div>
+    <h2>Clarity makes manipulation<br><span class="amber">obvious and impossible<br>to ignore.</span></h2>
+    <div class="solution-grid">
+      <div class="sol-card">
+        <div class="sol-num">01</div>
+        <div class="sol-title">Real-time detection</div>
+        <div class="sol-desc">Our Chrome extension scans the DOM continuously for behavioral manipulation patterns — countdown timers, scarcity messages, social proof, infinite scroll, and more.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-num">02</div>
+        <div class="sol-title">AI-powered commentary</div>
+        <div class="sol-desc">Claude generates witty, plain-language explanations tailored to the specific site and pattern — not technical jargon, but the kind of thing a sharp friend would whisper to you.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-num">03</div>
+        <div class="sol-title">The pause effect</div>
+        <div class="sol-desc">By naming manipulation out loud, Clarity creates a moment of friction — a beat of self-awareness before you click, buy, or keep scrolling.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-num">04</div>
+        <div class="sol-title">Non-intrusive by design</div>
+        <div class="sol-desc">Cards appear in the corner, auto-dismiss in 12 seconds, and never block content. Clarity informs without being another thing that hijacks your attention.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 4: How It Works ─── -->
+  <div class="slide" id="s4">
+    <div class="label">How It Works</div>
+    <h2>Three steps. <span class="amber">Zero friction.</span></h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Detect</div>
+        <div class="step-desc">Content script scans DOM for known manipulation patterns using CSS selectors and text regex — continuously, as the page updates.</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Translate</div>
+        <div class="step-desc">Matched pattern + site context is sent to Claude API. Claude generates a sharp, human, often humorous 1–2 sentence observation.</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Surface</div>
+        <div class="step-desc">A Clarity card appears in the bottom-right corner. The user sees it, reads it, and — crucially — pauses. Then it disappears on its own.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 5: Demo ─── -->
+  <div class="slide" id="s5">
+    <div class="label">Demo</div>
+    <h2>Clarity on three<br><span class="amber">real sites.</span></h2>
+    <div class="demo-grid">
+
+      <div class="demo-card">
+        <div class="demo-header">
+          <div class="demo-dot" style="background:#EF4444"></div>
+          <span class="demo-brand">CLARITY</span>
+          <span class="demo-type">scarcity</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-comment">Amazon wants you to feel like you're losing something you never had. You're not.</div>
+          <div class="demo-badge-wrap">
+            <span class="demo-badge" style="background:#FEE2E2;color:#991B1B">false scarcity</span>
+          </div>
+        </div>
+        <div class="demo-site">amazon.com · "Only 3 left in stock"</div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-header">
+          <div class="demo-dot" style="background:#F59E0B"></div>
+          <span class="demo-brand">CLARITY</span>
+          <span class="demo-type">urgency</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-comment">Why is Macy's selling wool jackets before summer? This smells like urgency manipulation.</div>
+          <div class="demo-badge-wrap">
+            <span class="demo-badge" style="background:#FEF3C7;color:#92400E">countdown timer</span>
+          </div>
+        </div>
+        <div class="demo-site">macys.com · "Sale ends in 02:14:33"</div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-header">
+          <div class="demo-dot" style="background:#10B981"></div>
+          <span class="demo-brand">CLARITY</span>
+          <span class="demo-type">attention trap</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-comment">You've been scrolling for 9 minutes. There's no bottom. That's not an accident — it's the product.</div>
+          <div class="demo-badge-wrap">
+            <span class="demo-badge" style="background:#D1FAE5;color:#065F46">infinite scroll</span>
+          </div>
+        </div>
+        <div class="demo-site">instagram.com · 9 min, 3 content loads</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Slide 6: Tech Stack ─── -->
+  <div class="slide" id="s6">
+    <div class="label">Technical Architecture</div>
+    <h2>Built to ship<br><span class="amber">in hours.</span></h2>
+    <div class="tech-grid">
+      <div class="tech-block">
+        <div class="tech-title">Frontend Layer</div>
+        <div class="tech-item">
+          <div class="tech-icon">⚙</div>
+          <div>
+            <div class="tech-name">Chrome Extension MV3</div>
+            <div class="tech-desc">Content script for DOM scanning. MutationObserver for dynamic content. Service worker for API calls.</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🎨</div>
+          <div>
+            <div class="tech-name">Injected Overlay UI</div>
+            <div class="tech-desc">Clarity cards animate in/out with zero dependency on page styles. CSS scoped under #clarity-container.</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🔍</div>
+          <div>
+            <div class="tech-name">Pattern Detector</div>
+            <div class="tech-desc">CSS selector matching + regex text scanning across 5 core manipulation categories.</div>
+          </div>
+        </div>
+      </div>
+      <div class="tech-block">
+        <div class="tech-title">Intelligence Layer</div>
+        <div class="tech-item">
+          <div class="tech-icon">🤖</div>
+          <div>
+            <div class="tech-name">Claude claude-sonnet-4-20250514</div>
+            <div class="tech-desc">System-prompted to generate sharp, site-specific, 1–2 sentence observations with personality and wit.</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">⚡</div>
+          <div>
+            <div class="tech-name">Context-Aware Prompting</div>
+            <div class="tech-desc">Pattern type, matched text, and site hostname all fed to Claude for precise, non-generic output.</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🛡</div>
+          <div>
+            <div class="tech-name">Graceful Fallback</div>
+            <div class="tech-desc">Pre-written fallback comments ensure the overlay still works if the API is unavailable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 7: Vision ─── -->
+  <div class="slide" id="s7">
+    <div class="label">The Vision</div>
+    <div class="vision-quote">In a world where manipulation is <span>invisible and optimized</span>, Clarity makes it obvious — and <span>impossible to ignore.</span></div>
+    <div class="vision-row">
+      <div class="vision-item">
+        <div class="vision-head">Phase 1 — Awareness</div>
+        <div class="vision-text">Chrome extension detecting the top 10 manipulation patterns across major e-commerce and social platforms.</div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-head">Phase 2 — Education</div>
+        <div class="vision-text">Personal manipulation score. Weekly digest of tactics used on you. Progressive disclosure of deeper explanations.</div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-head">Phase 3 — Action</div>
+        <div class="vision-text">Block specific patterns. Crowdsource new detections. Clarity API for developers who want to audit their own products.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Slide 8: CTA ─── -->
+  <div class="slide" id="s8">
+    <div class="cta-title">Try<br><span>Clarity.</span></div>
+    <div class="cta-sub">We built a working Chrome extension in 5 hours. It runs on real sites. It calls Claude. It's a little uncomfortable. That's the point.</div>
+    <div class="cta-demo">See the demo →</div>
+    <div style="margin-top:48px">
+      <div class="muted" style="font-size:13px">Made at [Hackathon Name] · Powered by Claude API</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button onclick="prevSlide()">←</button>
+  <div class="dots" id="dots"></div>
+  <span class="slide-counter" id="counter">1 / 8</span>
+  <button onclick="nextSlide()">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let current = 0;
+
+  // Build dots
+  const dotsContainer = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot-indicator' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dotsContainer.children[current].classList.remove('active');
+    current = (n + totalSlides) % totalSlides;
+    slides[current].classList.add('active');
+    dotsContainer.children[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + totalSlides;
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+</script>
+</body>
+</html>
