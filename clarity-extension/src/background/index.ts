@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
             if (response) {
                 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
                     if (tab?.id) {
-                        chrome.tabs.sendMessage(tab.id, { type: 'SHOW_OVERLAY', response })
+                        chrome.tabs.sendMessage(tab.id, { type: 'SHOW_OVERLAY', response, signal: msg.signal })
                     }
                 })
             }
